@@ -86,24 +86,41 @@
 
 			const using_shuttle = document.getElementById('using_shuttle').value
 			const price_pre_shuttle = document.getElementById('price_pre_shuttle').value
-
 			const total_player = document.getElementById('total_player').value
 
-			// court
-			const arena_answer = price_court_per_hour * total_hour * total_court
-			const ans_price_court = document.getElementById('ans_price_court')
-			ans_price_court.value = arena_answer
 
-			// shuttle
-			const shuttle_answer = price_pre_shuttle * using_shuttle
+			if(	price_court_per_hour 	!=	""	&&	
+				total_hour				!=	""	&&
+				total_court				!=	""	&&
+				using_shuttle			!=	""	&&
+				price_pre_shuttle		!=	""	&&
+				total_player			!=	""
+				)
+			{
+				
+				// court
+				const arena_answer = price_court_per_hour * total_hour * total_court
+				const ans_price_court = document.getElementById('ans_price_court')
+				ans_price_court.value = arena_answer
 
-			const ans_price_shuttle = document.getElementById('ans_price_shuttle')
-			ans_price_shuttle.value = shuttle_answer
+				// shuttle
+				const shuttle_answer = price_pre_shuttle * using_shuttle
+
+				const ans_price_shuttle = document.getElementById('ans_price_shuttle')
+				ans_price_shuttle.value = shuttle_answer
 
 
-			const price_per_player = document.getElementById('price_per_player')
-			price_per_player.innerHTML = '<div class="alert alert-info text-center" > คนละ <a href="#" class="alert-link">'+(arena_answer + shuttle_answer) / total_player+'</a> บาท จ้าาาา </div>'
+				const price_per_player = document.getElementById('price_per_player')
+				price_per_player.innerHTML = '<div class="alert alert-success text-center" style="margin-bottom:0"> คนละ <a href="#" class="alert-link">'+(arena_answer + shuttle_answer) / total_player+'</a> บาท จ้าาาา</div><div class="text-center"><a style="font-size:11px" href="">คิดใหม่อีกที</a></div>'
 
+			}
+			else
+			{
+				const price_per_player = document.getElementById('price_per_player')
+				price_per_player.innerHTML = '<div class="alert alert-danger text-center" > กรอกข้อมูลให้ครบก่อนนะ </div><hr>'
+
+			}
+			
 			// const all_price = document.getElementById('all_price')
 			// all_price.value = ball_answer + arena_answer
 		}
