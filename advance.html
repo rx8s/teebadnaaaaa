@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="คิดค่าตีแบดกันเถอะ">
+	<title>คิดค่าตีแบดกันเถอะ</title>
+	<link rel="icon" href="badminton.png">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+	<style type="text/css">
+		html,body {
+			font-family: "Prompt", serif;
+		}
+		.footer {
+			position: fixed;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			background-color: #ffede9;
+			text-align: center;
+			height: 25px;
+		}
+	</style>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-FDWYWZENM1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-FDWYWZENM1');
+	</script>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row mt-2">
+			<div class="col-12">
+				<div id="all_price">
+					<input class="form-control" hidden id="ans_price_court">
+					<input class="form-control" hidden id="ans_price_shuttle">
+					<div id="price_per_player"></div>
+				</div>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-12 mb-2">
+				<div class="input-group">
+					<span class="input-group-text" id="basic-addon1">
+						<i class="fa-solid fa-tags"></i>&nbsp;ค่าคอร์ท ชั่วโมง ละ ?
+					</span>
+					<input type="text" class="form-control float-end text-end" id="price_court_per_hour" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
+				</div>
+			</div>
+			<div class="col-12">
+				<div class="input-group">
+					<span class="input-group-text" id="basic-addon1">คิดกี่ชั่วโมง</span>
+					<input type="text" class="form-control float-end text-end" id="nh" aria-label="คิดกี่ชั่วโมง" aria-describedby="basic-addon1" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
+				</div>
+			</div>
+		</div>
+		<hr>
+		<div id="loopx">
+			
+		</div>
+		
+	</div>
+
+	<div class="footer">
+		<a href="index.html" style="font-size:12px;">คิดแบบง่ายๆ</a>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function(){
+
+			//var item = items[Math.floor(Math.random()*items.length)];
+
+			var card = ['primary','secondary','success','danger','warning','info','dark'];
+
+			function get_random (list) {
+				return list[Math.floor((Math.random()*list.length))];
+			}
+
+
+			var nh = 0;
+			$("#nh").keyup(function() {
+				
+				let text = "";
+				for (let i = 1; i <= this.value; i++) {
+					let bd = get_random(card);
+					text += `
+							<div class="card card-body border-${bd}">
+								<div class="row">
+									<div class="col-6">
+										<div class="row mt-2">
+											<div class="col-12 mb-2">
+												<label><i class="fa-regular fa-clock"></i> ชั่วโมงที่</label>
+												<input type="text" class="form-control" id="total_hour[${i}]" readonly value="${i}" />
+											</div>
+
+											<div class="col-12 mb-2">
+												<label><i class="fa-solid fa-layer-group"></i> กี่คอร์ท</label>
+												<input type="text" class="form-control" id="total_court[${i}]" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
+											</div>
+
+											<div class="col-12 mb-2">
+												<label><i class="fa-solid fa-person-running"></i> กี่คนนะ</label>
+												<input type="text" class="form-control" id="total_player[${i}]" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
+											</div>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="row mt-2">
+											<div class="col-12 mb-2">
+												<label><i class="fa-solid fa-feather-pointed"></i> ใช้ลูกแบดไปกี่ลูก</label>
+												<input type="text" class="form-control" id="using_shuttle[${i}]" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
+											</div>
+											<div class="col-12 mb-2">
+												<label><i class="fa-solid fa-tag"></i> ลูกแบดลูกละเท่าไหร่</label>
+												<input type="text" class="form-control" id="price_pre_shuttle[${i}]" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
+											</div>
+											<div class="col-12 text-center">
+												<label style="display: block; min-width:100%; max-width:100%;">&nbsp;</label>
+												<a href="#" style="display: block; min-width:100%; max-width:100%;" class="btn btn-outline-${bd}" onclick="calcx(${i});">
+													<i class="fa-solid fa-calculator"></i>
+													ชั่วโมงที่ ${i} คนละกี่บาท
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row mt-2">
+									<div class="col text-center">
+										 <div id="rs[${i}]"></div>
+									</div>
+								</div>
+							</div>
+							<hr>
+					`;
+
+
+					
+				}
+
+
+
+				document.getElementById("loopx").innerHTML = text;
+			});
+
+			
+
+			
+
+		});
+
+		function calcx(i){
+			const price_court_per_hour = [];
+			const total_court = [];
+			const total_hour = [];
+			const using_shuttle = [];
+			const price_pre_shuttle = [];
+			const total_player = [];
+			const arena_answer = [];
+			const shuttle_answer = [];
+			const price_per_player = [];
+			const rs = [];
+
+			price_court_per_hour[i] = document.getElementById(`price_court_per_hour`).value;
+			total_court[i] = document.getElementById(`total_court[${i}]`).value;
+			total_hour[i] = document.getElementById(`total_hour[${i}]`).value;
+
+			using_shuttle[i] = document.getElementById(`using_shuttle[${i}]`).value
+			price_pre_shuttle[i] = document.getElementById(`price_pre_shuttle[${i}]`).value
+			total_player[i] = document.getElementById(`total_player[${i}]`).value
+
+
+			console.log(i, `price_court_per_hour[${i}]`,price_court_per_hour[i]);
+			console.log(i, `total_court[${i}]`,total_court[i]);
+			console.log(i, `total_hour[${i}]`,total_hour[i]);
+
+			arena_answer[i] = price_court_per_hour[i] * total_hour[i] * total_court[i];
+			shuttle_answer[i] = price_pre_shuttle[i] * using_shuttle[i];
+
+			rs[i] = document.getElementById(`rs[${i}]`)
+			rs[i].innerHTML = `<div class="alert alert-success text-center" style="margin-bottom:0"> คนละ <a href="#" class="alert-link">${((arena_answer[i] + shuttle_answer[i]) / total_player[i]).toFixed(2)}</a> บาท จ้าาาา</div><div class="text-center"></div>`;
+
+		}
+		
+		// $("#calc").click(function() {
+		// 	CAL();
+		// });
+		// function CAL() {
+
+
+		// 	if(	price_court_per_hour 	!=	""	&&	
+		// 		total_hour				!=	""	&&
+		// 		total_court				!=	""	&&
+		// 		using_shuttle			!=	""	&&
+		// 		price_pre_shuttle		!=	""	&&
+		// 		total_player			!=	""
+		// 		)
+		// 	{
+
+		// 		// court
+		// 		const arena_answer = price_court_per_hour * total_hour * total_court
+		// 		const ans_price_court = document.getElementById('ans_price_court')
+		// 		ans_price_court.value = arena_answer
+
+		// 		// shuttle
+		// 		const shuttle_answer = price_pre_shuttle * using_shuttle
+		// 		const ans_price_shuttle = document.getElementById('ans_price_shuttle')
+		// 		ans_price_shuttle.value = shuttle_answer
+
+
+		// 		const price_per_player = document.getElementById('price_per_player')
+		// 		price_per_player.innerHTML = '<div class="alert alert-success text-center" style="margin-bottom:0"> คนละ <a href="#" class="alert-link">'+((arena_answer + shuttle_answer) / total_player).toFixed(2)+'</a> บาท จ้าาาา</div><div class="text-center"><a style="font-size:11px" href="">คิดใหม่อีกที</a></div>'
+
+		// 	}
+		// 	else
+		// 	{
+		// 		const price_per_player = document.getElementById('price_per_player')
+		// 		price_per_player.innerHTML = '<div class="alert alert-danger text-center" > กรอกข้อมูลให้ครบก่อนนะ </div><hr>'
+
+		// 	}
+
+		// 	// const all_price = document.getElementById('all_price')
+		// 	// all_price.value = ball_answer + arena_answer
+		// }
+	</script>
+</body>
+</html>

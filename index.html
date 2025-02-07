@@ -17,6 +17,14 @@
 		html,body {
 			font-family: "Prompt", serif;
 		}
+		.footer {
+			position: fixed;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			text-align: center;
+			height: 25px;
+		}
 	</style>
 	<!-- Google tag (gtag.js) -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-FDWYWZENM1"></script>
@@ -45,15 +53,15 @@
 				<div class="row mt-2">
 					<div class="col-12 mb-2">
 						<label><i class="fa-solid fa-tags"></i> ค่าคอร์ท ชั่วโมง ละ ?</label>
-						<input type="text" class="form-control" id="price_court_per_hour" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57">
+						<input type="text" class="form-control" id="price_court_per_hour" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
 					</div>
 					<div class="col-12 mb-2">
 						<label><i class="fa-regular fa-clock"></i> กี่ชั่วโมง</label>
-						<input type="text" class="form-control" id="total_hour" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57">
+						<input type="text" class="form-control" id="total_hour" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
 					</div>
 					<div class="col-12 mb-2">
 						<label><i class="fa-solid fa-layer-group"></i> กี่คอร์ท</label>
-						<input type="text" class="form-control" id="total_court" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57">
+						<input type="text" class="form-control" id="total_court" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
 					</div>
 				</div>
 			</div>
@@ -61,15 +69,15 @@
 				<div class="row mt-2">
 					<div class="col-12 mb-2">
 						<label><i class="fa-solid fa-feather-pointed"></i> ใช้ลูกแบดไปกี่ลูก</label>
-						<input type="text" class="form-control" id="using_shuttle" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57">
+						<input type="text" class="form-control" id="using_shuttle" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
 					</div>
 					<div class="col-12 mb-2">
 						<label><i class="fa-solid fa-tag"></i> ลูกแบดลูกละเท่าไหร่</label>
-						<input type="text" class="form-control" id="price_pre_shuttle" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57">
+						<input type="text" class="form-control" id="price_pre_shuttle" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
 					</div>
 					<div class="col-12 mb-2">
 						<label><i class="fa-solid fa-person-running"></i> กี่คนนะ</label>
-						<input type="text" class="form-control" id="total_player" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57">
+						<input type="text" class="form-control" id="total_player" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" />
 					</div>
 				</div>
 			</div>
@@ -84,6 +92,10 @@
 			</div>
 		</div>
 	</div>
+	<div class="footer">
+		<a href="advance.html" style="font-size:12px;">คิดแยกชั่วโมงทีละชั่วโมง</a>
+	</div>
+
 	<script type="text/javascript">
 		$("#calc").click(function() {
 			CAL();
@@ -106,13 +118,13 @@
 				total_player			!=	""
 				)
 			{
-				
-				// court
+
+
 				const arena_answer = price_court_per_hour * total_hour * total_court
 				const ans_price_court = document.getElementById('ans_price_court')
 				ans_price_court.value = arena_answer
 
-				// shuttle
+
 				const shuttle_answer = price_pre_shuttle * using_shuttle
 
 				const ans_price_shuttle = document.getElementById('ans_price_shuttle')
@@ -120,7 +132,7 @@
 
 
 				const price_per_player = document.getElementById('price_per_player')
-				price_per_player.innerHTML = '<div class="alert alert-success text-center" style="margin-bottom:0"> คนละ <a href="#" class="alert-link">'+(arena_answer + shuttle_answer) / total_player+'</a> บาท จ้าาาา</div><div class="text-center"><a style="font-size:11px" href="">คิดใหม่อีกที</a></div>'
+				price_per_player.innerHTML = '<div class="alert alert-success text-center" style="margin-bottom:0"> คนละ <a href="#" class="alert-link">'+((arena_answer + shuttle_answer) / total_player).toFixed(2)+'</a> บาท จ้าาาา</div><div class="text-center"><a style="font-size:11px" href="">คิดใหม่อีกที</a></div>'
 
 			}
 			else
@@ -129,9 +141,7 @@
 				price_per_player.innerHTML = '<div class="alert alert-danger text-center" > กรอกข้อมูลให้ครบก่อนนะ </div><hr>'
 
 			}
-			
-			// const all_price = document.getElementById('all_price')
-			// all_price.value = ball_answer + arena_answer
+
 		}
 	</script>
 </body>
