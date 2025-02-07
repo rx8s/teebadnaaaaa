@@ -15,16 +15,20 @@
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 	<style type="text/css">
 		html,body {
-			font-family: "Prompt", serif;
+			font-family: "Prompt", serif !important;
+		}
+		body{
+			padding: 0 !important;
+			margin: 0 !important;
 		}
 		.footer {
-			position: fixed;
 			left: 0;
 			bottom: 0;
 			width: 100%;
 			background-color: #ffede9;
 			text-align: center;
-			height: 25px;
+			min-height: 4vh;
+			max-height: 4vh;
 		}
 	</style>
 	<!-- Google tag (gtag.js) -->
@@ -38,7 +42,7 @@
 	</script>
 </head>
 <body>
-	<div class="container-fluid">
+	<div class="container-fluid" style="min-height: 95vh;">
 		<div class="row mt-2">
 			<div class="col-12">
 				<div id="all_price">
@@ -68,7 +72,9 @@
 		<div id="loopx">
 			
 		</div>
-		
+		<div id="sum"></div>
+		<div id="calsum" class="mb-3 text-center" style="font-size:9px;">สูตร = ( ( ค่าคอร์ท x จำนวนคอร์ท) + (ค่าลูก x จำนวนลูก) ) / จำนวนคน </div>
+		<br>
 	</div>
 
 	<div class="footer">
@@ -76,16 +82,11 @@
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function(){
-
-			//var item = items[Math.floor(Math.random()*items.length)];
-
+			$("#calsum").hide();
 			var card = ['primary','secondary','success','danger','warning','info','dark'];
-
 			function get_random (list) {
 				return list[Math.floor((Math.random()*list.length))];
 			}
-
-
 			var nh = 0;
 			$("#nh").keyup(function() {
 				
@@ -135,39 +136,34 @@
 								</div>
 								<div class="row mt-2">
 									<div class="col text-center">
-										 <div id="rs[${i}]"></div>
+										<div id="rs[${i}]"></div>
 									</div>
 								</div>
 							</div>
 							<hr>
 					`;
-
-
-					
 				}
-
-
-
 				document.getElementById("loopx").innerHTML = text;
 			});
-
-			
-
-			
-
 		});
 
 		function calcx(i){
+
+			$("#calsum").show();
 			const price_court_per_hour = [];
 			const total_court = [];
 			const total_hour = [];
 			const using_shuttle = [];
 			const price_pre_shuttle = [];
 			const total_player = [];
-			const arena_answer = [];
-			const shuttle_answer = [];
 			const price_per_player = [];
 			const rs = [];
+			const sumh = [];
+			const arena_answer = [];
+			const shuttle_answer = [];
+
+			arena_answer[i] = 0;
+			shuttle_answer[i] = 0;
 
 			price_court_per_hour[i] = document.getElementById(`price_court_per_hour`).value;
 			total_court[i] = document.getElementById(`total_court[${i}]`).value;
@@ -177,59 +173,41 @@
 			price_pre_shuttle[i] = document.getElementById(`price_pre_shuttle[${i}]`).value
 			total_player[i] = document.getElementById(`total_player[${i}]`).value
 
+			if(	price_court_per_hour[i] 	!=	""	&&	
+				total_hour[i]				!=	""	&&
+				total_court[i]				!=	""	&&
+				using_shuttle[i]			!=	""	&&
+				price_pre_shuttle[i]		!=	""	&&
+				total_player[i]				!=	""
+				)
+			{
+				arena_answer[i] = (price_court_per_hour[i] * 1) * total_court[i];
+				shuttle_answer[i] = price_pre_shuttle[i] * using_shuttle[i];
 
-			console.log(i, `price_court_per_hour[${i}]`,price_court_per_hour[i]);
-			console.log(i, `total_court[${i}]`,total_court[i]);
-			console.log(i, `total_hour[${i}]`,total_hour[i]);
+				rs[i] = document.getElementById(`rs[${i}]`)
+				rs[i].innerHTML = `
+					<div class="alert alert-success text-center" style="margin-bottom:0"> 
+						คนละ <a href="#" class="alert-link">${((arena_answer[i] + shuttle_answer[i]) / total_player[i]).toFixed(2)}</a> บาท จ้าาาา
+					</div>
+					<div class="text-center">
+						<span style="font-size:9px;">ชั่วโมงที่ ${i} = ( ( ${price_court_per_hour[i]} x ${total_court[i]} ) + ( ${price_pre_shuttle[i]} x ${using_shuttle[i]} ) ) / ${total_player[i]}</span>
+						<br>
+					</div>`;
+				sumh[i]	=	((arena_answer[i] + shuttle_answer[i]) / total_player[i]).toFixed(2);
 
-			arena_answer[i] = price_court_per_hour[i] * total_hour[i] * total_court[i];
-			shuttle_answer[i] = price_pre_shuttle[i] * using_shuttle[i];
+				sumtotal(i,sumh[i]);
+			}
+			else
+			{
+				rs[i] = document.getElementById(`rs[${i}]`)
+				rs[i].innerHTML = '<div class="alert alert-danger text-center" > กรอกข้อมูลให้ครบก่อนนะ </div><hr>'
 
-			rs[i] = document.getElementById(`rs[${i}]`)
-			rs[i].innerHTML = `<div class="alert alert-success text-center" style="margin-bottom:0"> คนละ <a href="#" class="alert-link">${((arena_answer[i] + shuttle_answer[i]) / total_player[i]).toFixed(2)}</a> บาท จ้าาาา</div><div class="text-center"></div>`;
+			}
 
 		}
-		
-		// $("#calc").click(function() {
-		// 	CAL();
-		// });
-		// function CAL() {
-
-
-		// 	if(	price_court_per_hour 	!=	""	&&	
-		// 		total_hour				!=	""	&&
-		// 		total_court				!=	""	&&
-		// 		using_shuttle			!=	""	&&
-		// 		price_pre_shuttle		!=	""	&&
-		// 		total_player			!=	""
-		// 		)
-		// 	{
-
-		// 		// court
-		// 		const arena_answer = price_court_per_hour * total_hour * total_court
-		// 		const ans_price_court = document.getElementById('ans_price_court')
-		// 		ans_price_court.value = arena_answer
-
-		// 		// shuttle
-		// 		const shuttle_answer = price_pre_shuttle * using_shuttle
-		// 		const ans_price_shuttle = document.getElementById('ans_price_shuttle')
-		// 		ans_price_shuttle.value = shuttle_answer
-
-
-		// 		const price_per_player = document.getElementById('price_per_player')
-		// 		price_per_player.innerHTML = '<div class="alert alert-success text-center" style="margin-bottom:0"> คนละ <a href="#" class="alert-link">'+((arena_answer + shuttle_answer) / total_player).toFixed(2)+'</a> บาท จ้าาาา</div><div class="text-center"><a style="font-size:11px" href="">คิดใหม่อีกที</a></div>'
-
-		// 	}
-		// 	else
-		// 	{
-		// 		const price_per_player = document.getElementById('price_per_player')
-		// 		price_per_player.innerHTML = '<div class="alert alert-danger text-center" > กรอกข้อมูลให้ครบก่อนนะ </div><hr>'
-
-		// 	}
-
-		// 	// const all_price = document.getElementById('all_price')
-		// 	// all_price.value = ball_answer + arena_answer
-		// }
+		function sumtotal(i,sumh){
+			console.log(i, sumh);
+		}
 	</script>
 </body>
 </html>
