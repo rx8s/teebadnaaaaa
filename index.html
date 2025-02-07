@@ -17,15 +17,6 @@
 		html,body {
 			font-family: "Prompt", serif;
 		}
-		.footer {
-			left: 0;
-			bottom: 0;
-			width: 100%;
-			background-color: #ffede9;
-			text-align: center;
-			min-height: 4vh;
-			max-height: 4vh;
-		}
 	</style>
 	<!-- Google tag (gtag.js) -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-FDWYWZENM1"></script>
@@ -38,18 +29,23 @@
 	</script>
 </head>
 <body>
-	<div class="container-fluid" style="min-height: 95vh;">
+	<div class="container-fluid" style="min-height: 100vh;">
 		<div class="row mt-2">
+			<div class="col-12 text-center">
+				<a href="advance.html" style="font-size:12px;">คิดแยกชั่วโมงทีละชั่วโมง</a>
+				<hr>
+			</div>
+		</div>
+		<div class="row">
 			<div class="col-12">
 				<div id="all_price">
 					<input class="form-control" hidden id="ans_price_court">
 					<input class="form-control" hidden id="ans_price_shuttle">
-					
 					<div id="price_per_player"></div>
 				</div>
 			</div>
 		</div>
-		<div class="row mt-2">
+		<div class="row">
 			<div class="col-6">
 				<div class="row mt-2">
 					<div class="col-12 mb-2">
@@ -92,9 +88,6 @@
 				</a>
 			</div>
 		</div>
-	</div>
-	<div class="footer">
-		<a href="advance.html" style="font-size:12px;">คิดแยกชั่วโมงทีละชั่วโมง</a>
 	</div>
 
 	<script type="text/javascript">
