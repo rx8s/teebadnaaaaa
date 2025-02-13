@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สร้าง QR Code PromptPay</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/promptpay-qr@0.5.0/index.min.js"></script> -->
+    <script type="module">
+        import { generatePayload } from "https://cdn.jsdelivr.net/npm/promptpay-qr@0.5.0/index.min.js";
+        let divqr = document.getElementById("qrcode")
+        divqr.innerhtml = generatePayload('1749900303921', { amount: 4.22 })
+    </script>
+</head>
+<body>
+
+    <div id="qrcode"></div>
+</body>
+</html>

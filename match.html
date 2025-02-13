@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบคิดค่าตีแบด (ก๊วน)</title>
+    
+    <!-- Firebase SDK v11.3.0 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+        import { getDatabase, ref, set, get, update, onValue, push } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyBIe-ncWVaLrsEZpEXj8Zarr3Jeku6rlZk",
+          authDomain: "teebadnaaaaa.firebaseapp.com",
+          databaseURL: "https://teebadnaaaaa-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "teebadnaaaaa",
+          storageBucket: "teebadnaaaaa.firebasestorage.app",
+          messagingSenderId: "789554357659",
+          appId: "1:789554357659:web:d55f0745f460f213832d3e",
+          measurementId: "G-NY849BJCTM"
+      };
+
+        // เริ่มต้น Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+
+        // เพิ่มผู้เล่นใหม่
+      async function addPlayer() {
+        const playerName = document.getElementById("playerName").value;
+        if (playerName.trim() === "") return;
+
+        const playersRef = ref(db, "players");
+            const newPlayerRef = push(playersRef); // สร้างไอดีใหม่อัตโนมัติ
+
+            await set(newPlayerRef, {
+                name: playerName,
+                gamesPlayed: 0,
+                totalFee: 80 // ค่าแรกเข้า 80 บาท
+            });
+
+            document.getElementById("playerName").value = "";
+        }
+
+        // โหลดรายชื่อผู้เล่น
+        function loadPlayers() {
+            const list = document.getElementById("playerList");
+
+            const playersRef = ref(db, "players");
+            onValue(playersRef, (snapshot) => {
+                list.innerHTML = ""; // เคลียร์รายการก่อนโหลดใหม่
+                snapshot.forEach((childSnapshot) => {
+                    const playerId = childSnapshot.key;
+                    const data = childSnapshot.val();
+
+                    const li = document.createElement("li");
+                    li.textContent = `${data.name} | เกมที่เล่น: ${data.gamesPlayed} | ค่าบริการ: ${data.totalFee} บาท`;
+
+                    const btnPlay = document.createElement("button");
+                    btnPlay.textContent = "เล่นเกม";
+                    btnPlay.onclick = () => playGame(playerId, data.gamesPlayed, data.totalFee);
+                    
+                    li.appendChild(btnPlay);
+                    list.appendChild(li);
+                });
+            });
+        }
+
+        // เพิ่มเกม และอัปเดตราคา
+        async function playGame(playerId, gamesPlayed, totalFee) {
+            const newGamesPlayed = gamesPlayed + 1;
+            const newTotalFee = 80 + (newGamesPlayed * 20); // 80 บาทเริ่มต้น + 20 บาทต่อเกม
+
+            const playerRef = ref(db, "players/" + playerId);
+            await update(playerRef, {
+                gamesPlayed: newGamesPlayed,
+                totalFee: newTotalFee
+            });
+        }
+
+        // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
+        window.onload = loadPlayers;
+
+        // ทำให้ `addPlayer` ใช้งานได้ใน HTML
+        window.addPlayer = addPlayer;
+    </script>
+
+</head>
+<body>
+    <h1>ระบบคิดค่าตีแบด (ก๊วน)</h1>
+
+    <div>
+        <input type="text" id="playerName" placeholder="ชื่อผู้เล่น">
+        <button onclick="addPlayer()">เพิ่มสมาชิก</button>
+    </div>
+
+    <ul id="playerList"></ul>
+</body>
+</html>
