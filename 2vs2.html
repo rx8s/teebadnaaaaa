@@ -151,7 +151,11 @@
 
 
 	<script type="text/javascript">
+		$(document).ready(function() {
 
+			
+
+		});
 		
 
 		var qr_dom = document.getElementById('qrcode');
@@ -195,7 +199,7 @@
 	<script type="module">
 
 		import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-		import { getDatabase, ref, set, get, update, onValue, push, child, remove  } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+		import { getDatabase, ref, set, get, query, orderByChild, equalTo, update, onValue, push, child, remove, startAt, endAt  } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 		// ตั้งค่า Firebase
 		const firebaseConfig = {
 			apiKey: "AIzaSyBIe-ncWVaLrsEZpEXj8Zarr3Jeku6rlZk",
@@ -355,6 +359,97 @@
 			});
 		}
 
+		$("#search").keyup(function(e) {
+			console.log(this.value)
+			searchplayer(this.value);
+		});
+
+		async function searchplayer(s) {
+
+
+			const list = document.getElementById("playerList");
+			
+			list.innerHTML = "";
+
+			const date = await getCurrentDate();
+
+			const playerRef = await ref(db, `${gang}/${date}/players/`);
+			const gangRef = ref(db, `${gang}/information`);
+
+			const gangGet = await get(gangRef);
+			let ganginfor = gangGet.val();
+
+			const q = query(playerRef, orderByChild("name"), startAt(`${s}`), endAt(`${s}\uf8ff`));
+
+
+			let searchdata = await get(q).then((snapshot) => {
+				if (snapshot.exists()) {
+					snapshot.forEach((childSnapshot) => {
+
+						const playerId = childSnapshot.key;
+						const data = childSnapshot.val();
+						let FeeNow;
+						if(data.gamesPlayed == 0)
+						{
+							FeeNow = ganginfor.FeeStart;
+						}
+						else
+						{
+							FeeNow = ganginfor.FeeStart + (ganginfor.FeeGame * data.gamesPlayed);
+						}
+
+						const playerlist = document.createElement("li");
+						playerlist.classList.add("list-group-item");
+						playerlist.innerHTML = `
+						<div class="row">
+							<div class="col-8" id="playerCanClick${playerId}" >
+								<i class="fa-regular fa-circle-user"></i> <span style="font-size:20px;">${data.name} </span>
+								<br> 
+								<span style="font-size: 13px;">เกมที่เล่น: <b>${data.gamesPlayed}</b> ค่าบริการ: <b>${FeeNow}</b> บาท </span>
+							</div>
+							<div class="col-4 d-flex justify-content-end" id="menuList${playerId}"></div>
+						</div>
+						`;
+						playerlist.setAttribute("data-id", playerId);
+						playerlist.setAttribute("menu-id", playerId);
+						list.appendChild(playerlist);
+
+					//=================================================
+
+						const menu = document.getElementById(`menuList${playerId}`);
+
+						menu.innerHTML = "";
+						const menuitem = document.createElement("div");
+						menuitem.innerHTML = `
+						<!--a href="#" id="edit${playerId}">Edit</a-->
+						<a class="btn bt-link " href="#" id="pay${playerId}"><i class="fa-solid fa-money-bill-1-wave"></i> ชำระเงิน</a>
+						`;
+						menuitem.setAttribute("data-id", playerId);
+						menuitem.setAttribute("menu-id", playerId);
+						menu.appendChild(menuitem);
+						$(`#playerCanClick${playerId}`).click( async (e) => {
+							playerlist.classList.add("selected");
+							await selectPlayer(playerId, data.name);
+						});
+						$(`#pay${playerId}`).click( async (e) => {
+							await render_qr(`${FeeNow}`);
+							$("#staticBackdrop").modal("show");
+						});
+
+					});
+				} else {
+					console.log("ไม่พบข้อมูล");
+				}
+			}).catch((error) => {
+				console.error("เกิดข้อผิดพลาด:", error);
+			});
+
+
+
+
+
+
+		}
 		
 
 		let selectedPlayers = [];
@@ -494,6 +589,7 @@
 		// ทำให้ฟังก์ชันใช้งานได้ใน HTML
 		window.addPlayer = addPlayer;
 		window.loadPlayers = loadPlayers;
+		window.searchplayer = searchplayer;
 
 	</script>
 
