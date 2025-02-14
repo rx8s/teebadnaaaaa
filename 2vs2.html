@@ -78,7 +78,7 @@
 							<div class="card-body" style="padding:0.25;">
 								<div class="row pb-1">
 									<div class="col">
-										<input id="search" class="form-control" placeholder="ค้นหา...">
+										<input id="search" class="form-control" placeholder="ค้นหา..." autocomplete="off">
 									</div>
 								</div>
 								<div class="row" style="max-height: 50vh; min-height: 50vh; overflow: auto;">
@@ -134,7 +134,11 @@
 	</script>
 
 
-	
+	<div id="hold">
+		test hold
+	</div>
+	<input type="text" id="putdata" />
+
 
 	<!-- <h2>รายงานย้อนหลัง</h2>
 	<ul id="reportList"></ul> -->
@@ -178,6 +182,25 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="modal fade" id="modaldelete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-body" style="background-color: #CA0B00; border-top-right-radius: calc(0.5rem - (1px)); border-top-left-radius: calc(0.5rem - (1px));">
+					<div class="row">
+						<div class="col-12" style="color: #fff;">
+							<i class="fa-regular fa-trash-can"></i> ยืนยัน ลบ คุณ <span	 id="nameplayerdelete"></span>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div id="btnconfirmdelete"></div>
+					<button type="button" id="" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal"><i class="fa-regular fa-circle-xmark"></i> ปิด</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 
 
 	<script type="text/javascript">
@@ -349,7 +372,8 @@
 					playerlist.innerHTML = `
 						<div class="row">
 							<div class="col-8" id="playerCanClick${playerId}" >
-								<i class="fa-regular fa-circle-user"></i> <span style="font-size:20px;">${data.name} </span>
+								<i class="fa-regular fa-circle-user"></i> 
+								<span style="font-size:20px;">${data.name} </span>
 								<br> 
 								<span style="font-size: 13px;">เกมที่เล่น: <b class="totalgame">${data.gamesPlayed}</b> ค่าบริการ: <b class="feenow">${FeeNow}</b> บาท </span>
 							</div>
@@ -359,6 +383,9 @@
 					playerlist.setAttribute("data-id", playerId);
 					playerlist.setAttribute("menu-id", playerId);
 					list.appendChild(playerlist);
+
+					//=================================================
+					
 
 					//=================================================
 
@@ -373,9 +400,39 @@
 					menuitem.setAttribute("data-id", playerId);
 					menuitem.setAttribute("menu-id", playerId);
 					menu.appendChild(menuitem);
+					//======
+					var setint  = '';
+					var holdval = 0;
+					$(`#playerCanClick${playerId}`).on('mousedown',function (e) {
+						clearInterval(setint);
+						holdval = 0;
+						setint = setInterval(function () {
+							++holdval;
+							if(holdval > 15)
+							{
+								const nameplayerdelete = document.getElementById(`nameplayerdelete`);
+								const btnconfirmdelete = document.getElementById(`btnconfirmdelete`);
+								btnconfirmdelete.innerHTML = `
+									<button type="button" id="btnpay${playerId}" onclick="confirmpay(${playerId})" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-circle-check"></i> ยืนยันลบ</button>
+								`;
+								nameplayerdelete.innerHTML = `<span style="font-size:20px;">${data.name} </span>`
+								// console.log('call delete')
+								$("#modaldelete").modal("show");
+							}
+						},50);
+					});
+					$(`#playerCanClick${playerId}`).on("mouseleave mouseup", function () {
+						holdval = 0;
+						clearInterval(setint);
+					});
+					//======
+
 					$(`#playerCanClick${playerId}`).click( async (e) => {
 						playerlist.classList.add("selected");
 						await selectPlayer(playerId, data.name);
+
+
+						
 					});
 					$(`#pay${playerId}`).click( async (e) => {
 						await render_qr(`${FeeNow}`);
@@ -399,6 +456,29 @@
 			console.log(this.value)
 			searchplayer(this.value);
 		});
+
+
+
+		// var setint  = '';
+		// $(document).ready(function() {
+		// 	var val = 0;
+		// 	$('#hold').on('mousedown',function (e) {
+		// 		clearInterval(setint);
+		// 		val = 0;
+		// 		setint = setInterval(function () {
+		// 			++val;
+		// 			if(val > 15)
+		// 			{
+		// 				console.log('call event');
+		// 			}
+		// 		},50);
+		// 	});
+		// 	$('#hold').on("mouseleave mouseup", function () {
+		// 		val = 0;
+		// 		clearInterval(setint);
+		// 	});
+		// });
+
 
 		async function searchplayer(s) {
 
@@ -619,7 +699,7 @@
 			await setupGang();
 			await loadPlayers();
 			await loadGames();
-			await loadReport();
+			// await loadReport();
 		};
 
 		// ทำให้ฟังก์ชันใช้งานได้ใน HTML
