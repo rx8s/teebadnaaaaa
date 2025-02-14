@@ -29,6 +29,7 @@
 	<style type="text/css">
 		html, body{
 			font-family: "Prompt", serif !important;
+			background-color: #f5f5fa;
 			
 		}
 		.selected{
@@ -36,6 +37,12 @@
 			background-color: #cfe2ff;
 			text-decoration: underline;
 			font-weight: bold;
+		}
+		.feenow{
+			color: #198754;
+		}
+		.totalgame{
+			color: #0d6efd;
 		}
 	</style>
 
@@ -129,21 +136,44 @@
 
 	
 
-	<h2>รายงานย้อนหลัง</h2>
-	<ul id="reportList"></ul>
+	<!-- <h2>รายงานย้อนหลัง</h2>
+	<ul id="reportList"></ul> -->
 
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-xl">
 			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="staticBackdropLabel">QR Promtpay</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div id="qrcode" style="padding:2%; text-align: center;" class="d-flex justify-content-center"></div>
+				<div class="modal-body" style="background-color: #1a3761; border-top-right-radius: calc(0.5rem - (1px)); border-top-left-radius: calc(0.5rem - (1px));">
+					<div class="row">
+						<div class="col-12">
+							<div class="row justify-content-center">
+								<div class="col-9 d-flex justify-content-center">
+									<img src="ThaiQR.jpg" class="img-fluid">
+								</div>
+							</div>
+							<div style="border: 1px solid #fff; background-color: #fff; border-radius: 5%;">
+								<div class="row justify-content-center">
+									<div class="col-9 d-flex justify-content-center" >
+										<div style="padding-left: 25%; padding-right: 25%; padding-top: 10%; padding-bottom: 3%;">
+											<img src="prompt-pay-logo.png" class="img-fluid">
+										</div>
+									</div>
+								</div>
+								<div id="qrcode" style="padding: 5%; text-align: center;" class="d-flex justify-content-center"></div>
+								<div class="row">
+									<div class="col-12 text-center">
+										ยอดชำระ <b><span id="amoutnow">amoutnow</span></b> บาท
+									</div>
+									<div class="col-12 text-center">
+										หมายเลขพร้อมเพย์ : <span id="accid">accid</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ปิด</button>
+					<div id="btnconfirmpay"></div>
+					<button type="button" id="" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="fa-regular fa-circle-xmark"></i> ปิด</button>
 				</div>
 			</div>
 		</div>
@@ -151,17 +181,13 @@
 
 
 	<script type="text/javascript">
-		$(document).ready(function() {
-
-			
-
-		});
+		
 		
 
 		var qr_dom = document.getElementById('qrcode');
 
+		var accid = "1749900303921";
 		function render_qr(amount){
-			var id = "1749900303921";
 
 			let wh;
 
@@ -171,11 +197,11 @@
 			}
 			else
 			{
-				wh = (window.innerWidth - (window.innerWidth*20/100))
+				wh = (window.innerWidth - (window.innerWidth*30/100))
 			}
 
 
-			var txt = PromptPayQR.gen_text(id, amount);
+			var txt = PromptPayQR.gen_text(accid, amount);
 
 			qr_dom.innerHTML = "";
 			if(txt){
@@ -325,7 +351,7 @@
 							<div class="col-8" id="playerCanClick${playerId}" >
 								<i class="fa-regular fa-circle-user"></i> <span style="font-size:20px;">${data.name} </span>
 								<br> 
-								<span style="font-size: 13px;">เกมที่เล่น: <b>${data.gamesPlayed}</b> ค่าบริการ: <b>${FeeNow}</b> บาท </span>
+								<span style="font-size: 13px;">เกมที่เล่น: <b class="totalgame">${data.gamesPlayed}</b> ค่าบริการ: <b class="feenow">${FeeNow}</b> บาท </span>
 							</div>
 							<div class="col-4 d-flex justify-content-end" id="menuList${playerId}"></div>
 						</div>
@@ -342,7 +368,7 @@
 					const menuitem = document.createElement("div");
 					menuitem.innerHTML = `
 						<!--a href="#" id="edit${playerId}">Edit</a-->
-						<a class="btn bt-link " href="#" id="pay${playerId}"><i class="fa-solid fa-money-bill-1-wave"></i> ชำระเงิน</a>
+						<a class="btn btn-outline-primary" href="#" id="pay${playerId}"><i class="fa-solid fa-money-bill-1-wave"></i> ชำระเงิน</a>
 					`;
 					menuitem.setAttribute("data-id", playerId);
 					menuitem.setAttribute("menu-id", playerId);
@@ -353,6 +379,16 @@
 					});
 					$(`#pay${playerId}`).click( async (e) => {
 						await render_qr(`${FeeNow}`);
+						const amoutnow = document.getElementById(`amoutnow`);
+						const accidshow = document.getElementById(`accid`);
+						const btnconfirmpay = document.getElementById(`btnconfirmpay`);
+
+						amoutnow.innerHTML = `${FeeNow}`;
+						accidshow.innerHTML = `${accid}`;
+						btnconfirmpay.innerHTML = `
+							<button type="button" id="btnpay${playerId}" onclick="confirmpay(${playerId})" class="btn btn-outline-success"><i class="fa-solid fa-circle-check"></i> ชำระเรียบร้อย</button>
+						`;
+
 						$("#staticBackdrop").modal("show");
 					});
 				});
@@ -405,7 +441,7 @@
 							<div class="col-8" id="playerCanClick${playerId}" >
 								<i class="fa-regular fa-circle-user"></i> <span style="font-size:20px;">${data.name} </span>
 								<br> 
-								<span style="font-size: 13px;">เกมที่เล่น: <b>${data.gamesPlayed}</b> ค่าบริการ: <b>${FeeNow}</b> บาท </span>
+								<span style="font-size: 13px;">เกมที่เล่น: <b class="totalgame">${data.gamesPlayed}</b> ค่าบริการ: <b class="feenow">${FeeNow}</b> บาท </span>
 							</div>
 							<div class="col-4 d-flex justify-content-end" id="menuList${playerId}"></div>
 						</div>
@@ -422,7 +458,7 @@
 						const menuitem = document.createElement("div");
 						menuitem.innerHTML = `
 						<!--a href="#" id="edit${playerId}">Edit</a-->
-						<a class="btn bt-link " href="#" id="pay${playerId}"><i class="fa-solid fa-money-bill-1-wave"></i> ชำระเงิน</a>
+						<a class="btn btn-outline-primary " href="#" id="pay${playerId}"><i class="fa-solid fa-money-bill-1-wave"></i> ชำระเงิน</a>
 						`;
 						menuitem.setAttribute("data-id", playerId);
 						menuitem.setAttribute("menu-id", playerId);
