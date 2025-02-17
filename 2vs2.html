@@ -262,7 +262,7 @@
 
 		const gang		=	`AN`;
 		const FeeStart	=	80;
-		const FeeGame	=	20;
+		const FeeGame	=	23;
 
 		function dateymdhis(dd) {
 
@@ -367,6 +367,7 @@
 					playerlist.innerHTML = `
 						<div class="row">
 							<div class="col-8" id="playerCanClick${playerId}" >
+								<input type="checkbox" />
 								<i class="fa-regular fa-circle-user"></i> 
 								<span style="font-size:20px;">${data.name} </span>
 								<br> 
@@ -396,34 +397,37 @@
 					menuitem.setAttribute("menu-id", playerId);
 					menu.appendChild(menuitem);
 					//======
-					var setint  = '';
-					var holdval = 0;
-					$(`#playerCanClick${playerId}`).on('mousedown',function (e) {
-						clearInterval(setint);
-						holdval = 0;
-						setint = setInterval(function () {
-							++holdval;
-							if(holdval > 15)
-							{
-								const nameplayerdelete = document.getElementById(`nameplayerdelete`);
-								const btnconfirmdelete = document.getElementById(`btnconfirmdelete`);
-								btnconfirmdelete.innerHTML = `
-									<button type="button" id="btnpay${playerId}" onclick="confirmpay(${playerId})" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-circle-check"></i> ยืนยันลบ</button>
-								`;
-								nameplayerdelete.innerHTML = `<span style="font-size:20px;">${data.name} </span>`
-								// console.log('call delete')
-								$("#modaldelete").modal("show");
-							}
-						},50);
-					});
-					$(`#playerCanClick${playerId}`).on("mouseleave mouseup", function () {
-						holdval = 0;
-						clearInterval(setint);
-					});
+					// var setint  = '';
+					// var holdval = 0;
+					// $(`#playerCanClick${playerId}`).on('mousedown',function (e) {
+					// 	clearInterval(setint);
+					// 	holdval = 0;
+					// 	setint = setInterval(function () {
+					// 		++holdval;
+					// 		if(holdval > 15)
+					// 		{
+					// 			const nameplayerdelete = document.getElementById(`nameplayerdelete`);
+					// 			const btnconfirmdelete = document.getElementById(`btnconfirmdelete`);
+					// 			btnconfirmdelete.innerHTML = `
+					// 				<button type="button" id="btnpay${playerId}" onclick="confirmpay(${playerId})" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-circle-check"></i> ยืนยันลบ</button>
+					// 			`;
+					// 			nameplayerdelete.innerHTML = `<span style="font-size:20px;">${data.name} </span>`
+					// 			// console.log('call delete')
+					// 			$("#modaldelete").modal("show");
+					// 		}
+					// 	},50);
+					// });
+					// $(`#playerCanClick${playerId}`).on("mouseleave mouseup", function () {
+					// 	holdval = 0;
+					// 	clearInterval(setint);
+					// });
 					//======
 
 					$(`#playerCanClick${playerId}`).click( async (e) => {
-						playerlist.classList.add("selected");
+						
+						playerlist.classList.toggle("selected");
+						console.log(e);
+						//playerlist.classList.add("selected");
 						await selectPlayer(playerId, data.name);
 
 
@@ -514,6 +518,7 @@
 						playerlist.innerHTML = `
 						<div class="row">
 							<div class="col-8" id="playerCanClick${playerId}" >
+								<input type="checkbox" id="playerChecked${playerId}" />
 								<i class="fa-regular fa-circle-user"></i> <span style="font-size:20px;">${data.name} </span>
 								<br> 
 								<span style="font-size: 13px;">เกมที่เล่น: <b class="totalgame">${data.gamesPlayed}</b> ค่าบริการ: <b class="feenow">${FeeNow}</b> บาท </span>
